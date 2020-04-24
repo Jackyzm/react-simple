@@ -1,3 +1,5 @@
+import diff from './diff'
+
 // 加载组件
 export const renderComponent = (comp) => {
     const {
@@ -45,18 +47,18 @@ const setComponentProps = (comp, props) =>{
 }
 
 // 将虚拟dom转换成真实dom
-const _render = (vNone) => {
-    if (!vNone) return;
+const _render = (vNode) => {
+    if (!vNode) return;
 
-    if (typeof vNone === 'string') {
-        return document.createTextNode(vNone)
-    } 
-
-    if (typeof vNone === 'number') {
-        return document.createTextNode(vNone.toString())
+    if (typeof vNode === 'string') {
+        return document.createTextNode(vNode);
     }
 
-    const { tag, attrs, children } = vNone;
+    if (typeof vNode === 'number') {
+        return document.createTextNode(vNode.toString());
+    }
+
+    const { tag, attrs, children } = vNode;
 
     // 如果tag是函数 则证明这是一个组件
     if (typeof tag === 'function') {
@@ -86,25 +88,21 @@ const _render = (vNone) => {
     return node;
 }
 
-// 将虚拟dom转换成真实dom
-const render = (vNone, dom) =>{
-    // console.log(vNone);
-    return dom.appendChild(_render(vNone));
-}
-
 // 设置标签属性 className 事件 title id style等
 const setAttribute = (dom, attr) =>{
     const [key, value] = attr;
+    // 没有值 则清除属性
+    if (!value) return dom.removeAttribute(key);
 
     // class
     if (key === 'className') {
-        dom.setAttribute('class', value || '');
+        dom.setAttribute('class', value);
     } else if (key.startsWith('on')) { // 各种事件
         const newKey = key.toLowerCase();
         dom[newKey] = value;
     } else if (key === 'style') { // 行内style
         if (!value || typeof value === 'string') {
-            dom.setAttribute(key, value || '');
+            dom.setAttribute(key, value);
         } else if (typeof value === 'object') {
             Object.entries(value).map((item) => {
                 const [cssKey, cssValue] = item;
@@ -116,8 +114,15 @@ const setAttribute = (dom, attr) =>{
             })
         }
     } else { // 其他各种属性
-        dom.setAttribute(key, value || '');
+        dom.setAttribute(key, value);
     }
+}
+
+// 将虚拟dom转换成真实dom
+const render = (vNode, container, dom) =>{
+    // console.log(vNode);
+    // return container.appendChild(_render(vNode));
+    return diff(vNode, dom, container);
 }
 
 const ReactDOM = {

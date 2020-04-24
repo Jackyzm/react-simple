@@ -125,7 +125,7 @@ const func = () => {
 }
 
 const element = (
-    <div className="title" title="xxx" style="width:100px;height:100px;">
+    <div className="title" title="xxx" style="width:100px;height:100px;" onClick={ func }>
         react
         <div style={{backgroundColor: '#f00'}}>
             <span>111</span>
@@ -141,16 +141,19 @@ const element = (
 
 // 使用babel转换之后
 // var element = /*#__PURE__*/React.createElement("div", {
-//     className: "title",
-//     title: "xxx",
-//     style: "width:100px;height:100px;",
-//     onClick: func
-//   }, "react", /*#__PURE__*/React.createElement("div", {
-//     style: {
-//       backgroundColor: '#f00'
-//     }
-//   }, /*#__PURE__*/React.createElement("span", null, "111")));
+//   className: "title",
+//   title: "xxx",
+//   style: "width:100px;height:100px;"
+// }, "react", /*#__PURE__*/React.createElement("div", {
+//   style: {
+//     backgroundColor: '#f00'
+//   }
+// }, /*#__PURE__*/React.createElement("span", null, "111")), /*#__PURE__*/React.createElement(Foo, {
+//   foo: "xxx"
+// }, /*#__PURE__*/React.createElement("div", null, "111")), /*#__PURE__*/React.createElement(Com, {
+//   ll: "llll"
+// }, /*#__PURE__*/React.createElement("div", null, "2222")));
 
 // ReactDOM.render("xxxxxx", document.getElementById('root'));
 
-ReactDOM.render(element, document.getElementById('root'));
+ReactDOM.render(<Com ll="11122"/>, document.getElementById('root'));
