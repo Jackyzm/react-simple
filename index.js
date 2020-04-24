@@ -1,4 +1,4 @@
-import React from './react';
+import React, { Component } from './react';
 import ReactDOM from './react-dom';
 
 // babel在线转换
@@ -38,21 +38,55 @@ const Foo = (props) => {
 
 
 // class 组件
-class Com extends React.Component {
+class Com extends Component {
     constructor(props){
         // 在一个构造方法中可以使用super关键字来调用一个父类的构造方法。
         super(props);
         this.state = {
-            a: 111
+            count: 10
         }
     }
+
+    componentWillMount(){
+        console.log('componentWillMount');
+    }
+
+    componentWillReceiveProps(props){
+        console.log('componentWillReceiveProps', props);
+    }
+
+    componentWillUpdate(){
+        console.log('componentWillUpdate');
+    }
+
+    componentDidUpdate(){
+        console.log('componentDidUpdate');
+    }
+
+    componentDidMount(){
+        console.log('componentDidMount');
+    }
+
+    btnClick (){
+        const { count } = this.state;
+        this.setState({ count: count + 1 })
+    }
+
     render() {
-        // console.log(this);
         const { ll } = this.props;
-        return(
-            <div>
-                <div>xxsadas</div>
-                <div>{ll}</div>
+        const { count } = this.state;
+        return (
+            <div className="title" title="xxx" style="width:100px;height:100px;">
+                react
+                <div style={{backgroundColor: '#f00'}}>
+                    <span>111</span>
+                    <span>{ll}</span>
+                </div>
+                <div>
+                    <p>{ count }</p>
+                    {/* <button onClick={this.btnClick.bind(this)}>点点点</button> */}
+                    <button onClick={() => this.btnClick()}>点点点</button>
+                </div>
             </div>
         )
     }
@@ -91,7 +125,7 @@ const func = () => {
 }
 
 const element = (
-    <div className="title" title="xxx" style="width:100px;height:100px;" onClick={ func }>
+    <div className="title" title="xxx" style="width:100px;height:100px;">
         react
         <div style={{backgroundColor: '#f00'}}>
             <span>111</span>
