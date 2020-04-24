@@ -3,28 +3,41 @@ const _render = (vNone)=>{
 
     if (typeof vNone === 'string') {
         return document.createTextNode(vNone)
-    } else {
-        const { tag, attrs, children } = vNone;
-        const node = document.createElement(tag);
+    } 
 
-        attrs && Object.entries(attrs).map((item)=>{
-            setAttribute(node, item);
-        })
+    const { tag, attrs, children } = vNone;
 
-        // 递归
-        if (children) children.map((item) => render(item, node));
-
-        return node;
+    // 如果tag是函数 则证明这是一个组件
+    if (typeof tag === 'function') {
+        // 如果存在prototype 并且有render方法 则证明这是一个class组件
+        if (tag.prototype && tag.prototype.render) {
+            const Com = new tag(attrs);
+            const ComVNode = Com.render();
+            return _render(ComVNode);
+        } else {
+            // 函数组件
+            const ComVNode = new tag(attrs);
+            return _render(ComVNode);
+        }
     }
+
+    const node = document.createElement(tag);
+
+    // 设置属性
+    attrs && Object.entries(attrs).map((item)=> setAttribute(node, item))
+
+    // 递归渲染children
+    if (children) children.map((item) => render(item, node));
+    return node;
 }
 
 // 将虚拟dom计算成真实dom
 const render = (vNone, dom) =>{
-    // console.log(vNone, dom);
+    // console.log(vNone);
     return dom.appendChild(_render(vNone));
 }
 
-// className onClick onFocus等等 style   id title
+// 设置标签属性 className 事件 title id style等
 const setAttribute = (dom, attr) =>{
     const [key, value] = attr;
 
